@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="centered">
+
+    <div class="box">
+        <h1 class="title">Inicio de Sesión</h1>
+
+        <form id="loginForm">
+            <label>Usuario</label>
+            <input type="text" id="logUser" required>
+
+            <label>Contraseña</label>
+            <input type="password" id="logPass" required>
+
+            <button class="btn" type="submit">Entrar</button>
+        </form>
+
+        <p class="alt">¿No tenés cuenta? <a href="index.html">Registrate</a>.</p>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", e => {
+            e.preventDefault();
+
+            let u = localStorage.getItem("usuario");
+            let p = localStorage.getItem("password");
+
+            if (document.getElementById("logUser").value === u &&
+                document.getElementById("logPass").value === p) {
+                window.location.href = "home.html";
+            } else {
+                alert("Usuario o contraseña incorrectos");
+            }
+        });
+    </script>
+
+</body>
+</html>

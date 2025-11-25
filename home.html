@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+    <h2 class="logo">Mi Portal</h2>
+    <nav>
+        <a href="home.html">Inicio</a>
+        <a href="game.html">Juego Snake</a>
+        <a href="login.html">Salir</a>
+    </nav>
+</header>
+
+<section class="content">
+    <h1>Bienvenido a la página principal</h1>
+    <p>Ingresaste correctamente. Podés jugar al juego haciendo clic abajo vro</p>
+
+    <a class="bigBtn" href="game.html"> Jugar Snake</a>
+
+   //la api 
+    <div class="jokeBox">
+        <h2>Chiste malo aleatorio lol</h2>
+        <p id="jokeText">Tocá el botón para ver un chiste</p>
+        <button id="jokeBtn" class="bigBtn">Mostrar Chiste</button>
+    </div>
+</section>
+
+<script>
+    //  API DE CHISTES jaajj
+    const jokeBtn = document.getElementById("jokeBtn");
+    const jokeText = document.getElementById("jokeText");
+
+    jokeBtn.addEventListener("click", async () => {
+        jokeText.textContent = "Cargando...";
+
+        try {
+            const res = await fetch("https://icanhazdadjoke.com/", {
+                headers: { "Accept": "application/json" }
+            });
+
+            const data = await res.json();
+            jokeText.textContent = data.joke;
+
+        } catch (error) {
+            jokeText.textContent = "Error al obtener el chiste ";
+        }
+    });
+</script>
+
+</body>
+</html>

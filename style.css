@@ -1,0 +1,123 @@
+/* Fondo global */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: radial-gradient(circle, #1e0036, #0b0014);
+    color: #eee;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Caja central */
+.box {
+    background: rgba(40, 0, 75, 0.65);
+    backdrop-filter: blur(6px);
+    padding: 30px;
+    width: 330px;
+    border-radius: 16px;
+    border: 2px solid #8a2be2;
+    box-shadow: 0 0 25px #7b2dfd;
+    animation: fadeIn .7s;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #d39bff;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: none;
+    background: #210046;
+    color: #e7d9ff;
+}
+
+/* Botón */
+.btn, .bigBtn {
+    background: #8a2be2;
+    padding: 12px;
+    border: none;
+    margin-top: 15px;
+    width: 100%;
+    display: block;
+    text-align: center;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover, .bigBtn:hover {
+    background: #a565ff;
+}
+
+/* Texto alternativo */
+.alt {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.alt a {
+    color: #bc8cff;
+}
+
+/* Navbar */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 25px;
+    background: #15002b;
+    border-bottom: 2px solid #7b2dfd;
+}
+
+.nav a {
+    color: #cda9ff;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    color: white;
+}
+
+.logo {
+    color: #e0c7ff;
+}
+
+/* Home */
+.content {
+    padding: 40px;
+    text-align: center;
+}
+
+/* Juego */
+.gameContainer {
+    text-align: center;
+    background: rgba(40, 0, 75, 0.4);
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #8a2be2;
+}
+
+canvas {
+    background: #0f001f;
+    border: 2px solid #7b2dfd;
+    box-shadow: 0 0 20px #8a2be2;
+}
+
+/* Animación */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
