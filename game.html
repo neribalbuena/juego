@@ -1,23 +1,173 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake Game</title>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- ESTILO GENERAL COHERENTE CON TU WEB --- */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0014; /* violeta muy oscuro */
+            color: #e5d4ff; /* lila claro */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 28px;
+            color: #c084ff;
+            text-shadow: 0 0 10px #9b4dff;
+        }
+
+        /* --- CONTENEDOR DEL JUEGO --- */
+        #game-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #gameCanvas {
+            background: #140022;
+            border: 3px solid #bf5fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #a74aff;
+            width: 90vw;
+            height: 90vw;
+            max-width: 500px;
+            max-height: 500px;
+        }
+
+        /* --- BOTONES TACTILES (solo en móvil) --- */
+        #controls {
+            display: none; /* por defecto ocultos (para PC) */
+            margin-top: 15px;
+            width: 100%;
+            max-width: 500px;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            background: #9b4dff;
+            padding: 15px;
+            color: white;
+            font-size: 20px;
+            border-radius: 12px;
+            text-align: center;
+            user-select: none;
+            box-shadow: 0 0 10px #7a33cc;
+        }
+
+        /* SOLO mostrar botones si la pantalla es chica */
+        @media (max-width: 700px) {
+            #controls { display: grid; }
+        }
+    </style>
 </head>
+<body>
 
-<body class="centered">
+    <h1>Snake</h1>
 
-    <div class="gameContainer">
-        <h1 class="title">Snake</h1>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
 
-        <canvas id="game" width="400" height="400"></canvas>
+        <div id="controls">
+            <div></div>
+            <div class="btn" id="up">⬆️</div>
+            <div></div>
 
-        <p class="alt">Usá las flechas para moverte</p>
-        <a class="bigBtn" href="home.html">⬅ Volver</a>
+            <div class="btn" id="left">⬅️</div>
+            <div></div>
+            <div class="btn" id="right">➡️</div>
+
+            <div></div>
+            <div class="btn" id="down">⬇️</div>
+            <div></div>
+        </div>
     </div>
 
-    <script src="snake.js"></script>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            const size = Math.min(window.innerWidth * 0.9, 500);
+            canvas.width = size;
+            canvas.height = size;
+        }
+        resizeCanvas();
+        window.onresize = resizeCanvas;
+
+        let box = 20;
+        let snake = [{ x: 5, y: 5 }];
+        let direction = "RIGHT";
+        let food = { x: 10, y: 10 };
+
+        /* --- CONTROLES DE TECLADO --- */
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+            if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+            if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+            if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+        });
+
+        /* --- CONTROLES TACTILES --- */
+        document.getElementById("up").onclick = () => { if (direction !== "DOWN") direction = "UP"; };
+        document.getElementById("down").onclick = () => { if (direction !== "UP") direction = "DOWN"; };
+        document.getElementById("left").onclick = () => { if (direction !== "RIGHT") direction = "LEFT"; };
+        document.getElementById("right").onclick = () => { if (direction !== "LEFT") direction = "RIGHT"; };
+
+        /* --- LOOP PRINCIPAL DEL JUEGO --- */
+        function draw() {
+            ctx.fillStyle = "#0b0014";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = i === 0 ? "#d580ff" : "#a74aff";
+                ctx.fillRect(snake[i].x * box, snake[i].y * box, box, box);
+            }
+
+            ctx.fillStyle = "#ff3ddb";
+            ctx.fillRect(food.x * box, food.y * box, box, box);
+
+            let head = { x: snake[0].x, y: snake[0].y };
+            if (direction === "UP") head.y--;
+            if (direction === "DOWN") head.y++;
+            if (direction === "LEFT") head.x--;
+            if (direction === "RIGHT") head.x++;
+
+            if (head.x === food.x && head.y === food.y) {
+                food = {
+                    x: Math.floor(Math.random() * (canvas.width / box)),
+                    y: Math.floor(Math.random() * (canvas.height / box))
+                };
+            } else {
+                snake.pop();
+            }
+
+            if (
+                head.x < 0 || head.x >= canvas.width / box ||
+                head.y < 0 || head.y >= canvas.height / box ||
+                snake.some(s => s.x === head.x && s.y === head.y)
+            ) {
+                snake = [{ x: 5, y: 5 }];
+                direction = "RIGHT";
+            }
+
+            snake.unshift(head);
+        }
+
+        setInterval(draw, 120);
+    </script>
+
 </body>
 </html>

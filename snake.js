@@ -1,70 +1,98 @@
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 let box = 20;
 let snake = [{ x: 10 * box, y: 10 * box }];
-let food = randomPos();
-let dir = "";
-let score = 0;
+let food = {
+    x: Math.floor(Math.random() * 20) * box,
+    y: Math.floor(Math.random() * 20) * box
+};
 
-document.addEventListener("keydown", direction);
-
-function direction(event) {
-    if (event.key === "ArrowLeft" && dir !== "RIGHT") dir = "LEFT";
-    else if (event.key === "ArrowUp" && dir !== "DOWN") dir = "UP";
-    else if (event.key === "ArrowRight" && dir !== "LEFT") dir = "RIGHT";
-    else if (event.key === "ArrowDown" && dir !== "UP") dir = "DOWN";
-}
-
-function randomPos() {
-    return {
-        x: Math.floor(Math.random() * 20) * box,
-        y: Math.floor(Math.random() * 20) * box
-    };
-}
+let velocityX = 0;
+let velocityY = 0;
+let lastDirection = "";
 
 function draw() {
-    ctx.fillStyle = "#120027";
+    ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, 400, 400);
 
-    // comida
-    ctx.fillStyle = "#ff4dff";
+    // COMIDA
+    ctx.fillStyle = "red";
     ctx.fillRect(food.x, food.y, box, box);
 
-    // Snake
-    ctx.fillStyle = "#a56dff";
-    snake.forEach(p => ctx.fillRect(p.x, p.y, box, box));
+    // SNAKE
+    ctx.fillStyle = "lime";
+    snake.forEach(seg => ctx.fillRect(seg.x, seg.y, box, box));
 
-    // Moveimiento
-    let head = { ...snake[0] };
+    update();
+}
 
-    if (dir === "LEFT") head.x -= box;
-    if (dir === "RIGHT") head.x += box;
-    if (dir === "UP") head.y -= box;
-    if (dir === "DOWN") head.y += box;
+function update() {
+    let head = {
+        x: snake[0].x + velocityX * box,
+        y: snake[0].y + velocityY * box
+    };
 
-    // Colision con bordes
-    if (head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400) return gameOver();
+    if (velocityX === 0 && velocityY === 0) return;
 
-    // Colision con cuerpo
-    for (let s of snake) {
-        if (head.x === s.x && head.y === s.y) return gameOver();
+    // PAREDES
+    if (head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400) {
+        return gameOver();
     }
 
-    snake.unshift(head);
+    // CHOQUE CON CUERPO
+    for (let seg of snake) {
+        if (head.x === seg.x && head.y === seg.y) return gameOver();
+    }
 
-    // Eat food
+    // COMER
     if (head.x === food.x && head.y === food.y) {
-        food = randomPos();
-        score++;
+        snake.unshift(head);
+        food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
     } else {
         snake.pop();
+        snake.unshift(head);
     }
 }
 
+// TECLADO
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp" && lastDirection !== "DOWN") {
+        velocityX = 0; velocityY = -1; lastDirection = "UP";
+    }
+    if (e.key === "ArrowDown" && lastDirection !== "UP") {
+        velocityX = 0; velocityY = 1; lastDirection = "DOWN";
+    }
+    if (e.key === "ArrowLeft" && lastDirection !== "RIGHT") {
+        velocityX = -1; velocityY = 0; lastDirection = "LEFT";
+    }
+    if (e.key === "ArrowRight" && lastDirection !== "LEFT") {
+        velocityX = 1; velocityY = 0; lastDirection = "RIGHT";
+    }
+});
+
+// TOUCH CONTROLS
+window.setDirectionFromTouch = function(dir) {
+    if (dir === "UP" && lastDirection !== "DOWN") {
+        velocityX = 0; velocityY = -1; lastDirection = "UP";
+    }
+    if (dir === "DOWN" && lastDirection !== "UP") {
+        velocityX = 0; velocityY = 1; lastDirection = "DOWN";
+    }
+    if (dir === "LEFT" && lastDirection !== "RIGHT") {
+        velocityX = -1; velocityY = 0; lastDirection = "LEFT";
+    }
+    if (dir === "RIGHT" && lastDirection !== "LEFT") {
+        velocityX = 1; velocityY = 0; lastDirection = "RIGHT";
+    }
+};
+
 function gameOver() {
-    alert("Perdiste! Puntuación: " + score);
-    document.location.reload();
+    alert("¡Perdiste! Recargá la página para jugar de nuevo.");
+    location.reload();
 }
 
 setInterval(draw, 120);
